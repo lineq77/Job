@@ -1,13 +1,18 @@
 package application;
 
+import java.io.IOException;
+
+import application.views.MainSceneCtrl;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import models.Client;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,9 +23,80 @@ import javafx.scene.media.AudioClip;
 
 
 public class Main extends Application {
+	
+	private Stage primaryStage;
+	private BorderPane rootLayout;
+	
+	/**
+	 * Данные, в виде наблюдаемого списка клиентов.
+	 */
+	private ObservableList<Client> clientData = FXCollections.observableArrayList();
+	
+	
 	@Override
 	public void start(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+		this.primaryStage.setTitle("Интеграционная шина для ЧОП \"Гуси из гаража\"");
+		
+		initRootLayout();
+		
+	}
+	
+	/**
+	 * Конструктор
+	 */
+	public Main() {
+		// В качестве образца добавляем некоторые данные
+		clientData.add(new Client("Информирование", "ПАО \"Муха-цокотуха\"", 1000.0));
+		clientData.add(new Client("Информирование", "ООО \"Мойдодыр\"", 7000.0));
+		clientData.add(new Client("Предупреждение", "ИП Петров Николай Иванович", 15000.0));
+		clientData.add(new Client("Нет задолженности", "ООО \"Мумий Тролль\"", 0.0));
+		clientData.add(new Client("Заблокирован", "ЗАО \"Кот Базилио\"", 50000.0));
+		//clientData.add(new Client("Заблокирован", "ЗАО \"Кот Базилио\""));
+		//clientData.add(new Client("Заблокирован", "ЗАО \"Кот Базилио\""));
+		//clientData.add(new Client("Заблокирован", "ЗАО \"Кот Базилио\""));
+		//clientData.add(new Client("Заблокирован", "ЗАО \"Кот Базилио\""));
+	}
+	
+	/**
+	 * Возвращает данные в виде наблюдаемого списка клиентов.
+	 * @return
+	 */
+	public ObservableList<Client> getClientData() {
+		return clientData;
+	}
+	
+	/**
+     * Инициализирует корневой макет.
+     */
+    public void initRootLayout() {
+        try {
+            // Загружаем корневой макет из fxml файла.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("views/index.fxml"));
+            rootLayout = (BorderPane) loader.load();
+
+            // Отображаем сцену, содержащую корневой макет.
+            Scene scene = new Scene(rootLayout);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+            
+            // Даём контроллеру доступ к главному приложению.
+            MainSceneCtrl controller = loader.getController();
+            controller.setMainApp(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main(String[] args) {
+		launch(args);
+	}
+		/*
 		try {
+			
+			
+			
 			// создаем список объектов
 	        ObservableList<Person> people = FXCollections.observableArrayList(
 	             
@@ -92,8 +168,9 @@ public class Main extends Application {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
+		*/
 	
+    /*
 	private Button createButton() {
 		Button result = new Button("Жми");
 		result.setTooltip(new Tooltip("Не бойся, жми!"));
@@ -113,7 +190,5 @@ public class Main extends Application {
 		dialog.showAndWait();
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
+	*/
 }
